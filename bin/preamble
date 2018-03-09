@@ -3,12 +3,17 @@
 var os = require("os"),
     fs = require("fs");
 
+var now = new Date();
+if (process.env.SOURCE_DATE_EPOCH) {
+  now = new Date((process.env.SOURCE_DATE_EPOCH * 1000) + (now.getTimezoneOffset() * 60000));
+}
+
 fs.readFile("package.json", "utf8", function(error, text) {
   if (error) throw error;
   var json = JSON.parse(text);
   process.stdout.write("// " + (json.homepage || json.name)
       + " Version " + json.version + "."
-      + " Copyright " + (new Date).getFullYear()
+      + " Copyright " + now.getFullYear()
       + " " + json.author.name + (/\.$/.test(json.author.name) ? "" : ".")
       + os.EOL);
 });
